@@ -26,18 +26,20 @@ public class Solution {
                 int endOfSnake = Integer.parseInt(line[1]) - 1;
                 board[cellToX(startOfSnake)][cellToY(startOfSnake)] = endOfSnake;
             }
-            printBoard(board);
-            System.out.println("-------------------");
+            //printBoard(board);
+            //System.out.println("-------------------");
             System.out.println(solve(board));
         } 
     }
     
+    // BFS
     private static int solve(int[][] board) {
-        // max heap
-        Queue<Integer> worklist = new PriorityQueue<Integer>(new Comparator<Integer>() {
+        // max heap solution not working, use regular queue
+        Queue<Integer> worklist;  /* = new PriorityQueue<Integer>(new Comparator<Integer>() {
             @Override
             public int compare(Integer a, Integer b) { return b.compareTo(a); }
-        });
+        });*/
+        worklist = new LinkedList<Integer>();
         worklist.add(board[cellToX(0)][0]);
         Set<Integer> seen = new HashSet<Integer>();
         Map<Integer, Integer> numMoves = new HashMap<Integer, Integer>();
@@ -48,22 +50,14 @@ public class Solution {
 
         while (!worklist.isEmpty()) {
             int n = worklist.remove();
-            System.out.println("WORKLIST: " + worklist);
-            System.out.println("n: " + n);
             int movesOld = numMoves.get(n);
-            System.out.println("numMoves for n: " + movesOld);
             if (n == 99) {
-                System.out.println("made it " + numMoves.get(99));
                 return numMoves.get(99);
             }
-            System.out.println("Neighbors:  " + getNeigborIndices(board, n));
             for (int w : getNeigborIndices(board, n)) {
-                System.out.println("w: " + w + " already seen? " + seen.contains(w) 
-                                    + "  numMoves for w: " + numMoves.get(w));
                 if (!seen.contains(w)) { // perhaps seen is not needed, since we won't every end up in a cycle
                     if (movesOld + 1 < numMoves.get(w)) {
                         numMoves.put(w, movesOld + 1);
-                        System.out.println("updating moves for w to " + (movesOld + 1));
                         worklist.add(w);
                         seen.add(w);
                     }
@@ -83,17 +77,21 @@ public class Solution {
         }
         return neighbors;
     }
+
     private static void printBoard(int[][] board) {
         for(int[] arr : board) {
             System.out.println(Arrays.toString(arr));
         }
     }
+
     private static int cellToX (int cell) {
         return BOARD_SIDE_LEN - 1 - cell / 10;
     }
+
     private static int cellToY (int cell) {
         return cell % 10;
     }
+
     private static int[][] makeNewGameBoard() {
         // initialize board
         final int[][] board = new int[BOARD_SIDE_LEN][BOARD_SIDE_LEN];
