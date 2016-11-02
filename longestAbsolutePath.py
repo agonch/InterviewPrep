@@ -1,3 +1,7 @@
+# Given a directory input (spaces indicate a new subdirectory and files are the only 
+# lines that have a '.' followed by extention), return the longest absolute path
+# to an image file (either jpeg or png). In following example, answer is len('/dir1/dir12') = 11
+
 input = """dir1
  dir11
  dir12
