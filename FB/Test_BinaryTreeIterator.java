@@ -9,17 +9,25 @@ public class Test_BinaryTreeIterator {
 			System.out.println("Tree:");
 			printTreeSideWays(root);
 			
-			BinaryTreeIterator iter = new BinaryTreeIterator(root);
-			System.out.println("In order traversal using iterator:");
-			
+			BinaryTreeIterator iter = new BinaryTreeIterator(root);			
+			List<Integer> inorderActual = new ArrayList<>();
 			while(iter.hasNext()) {
-				System.out.print("" + iter.next().value + "  ");
+				inorderActual.add(iter.next().value);
 			}
+
+			System.out.println("In order traversal using iterator:");
+			System.out.println(inorderActual);
 			
-			System.out.println("\nExpected in order traversal:");
-			printExpectedInOrder(root);
-			System.out.println("\n\n");
+			List<Integer> inorderExpected = getInOrderTraversal(root);
+			System.out.println("Expected: \n" + inorderExpected);
+			
+			if (!inorderExpected.equals(inorderActual)) {
+				System.out.println("\n\nFAIL (check last case)");
+				System.exit(0);
+			}
+			System.out.println("\n");
 		}
+		System.out.println("PASSED");
 	}
 
 	private static List<Node> getTestTrees() {
@@ -55,15 +63,15 @@ public class Test_BinaryTreeIterator {
 		}
 
 		// get some trees of height 4
-		// int size = trees.size();
-		// for (int i = 4; i < size; i++) {
-		// 	for (int j = 4; j < size; j++) {
-		// 		n = new Node(val++);
-		// 		n.left = trees.get(i).copy();
-		// 		n.right = trees.get(j).copy();
-		// 		trees.add(n);
-		// 	}
-		// }
+		int size = trees.size();
+		for (int i = 4; i < size; i++) {
+			for (int j = 4; j < size; j++) {
+				n = new Node(val++);
+				n.left = trees.get(i).copy();
+				n.right = trees.get(j).copy();
+				trees.add(n);
+			}
+		}
 
 		return trees;
 	}
@@ -91,11 +99,17 @@ public class Test_BinaryTreeIterator {
         }
     }
 
-    private static void printExpectedInOrder(Node root) {
+	private static List<Integer> getInOrderTraversal(Node root) {
+    	List<Integer> l = new ArrayList<>();
+    	getInOrderTraversal(root, l);
+    	return l;	
+    }
+
+    private static void getInOrderTraversal(Node root, List<Integer> l) {
     	if (root != null) {
-    		printExpectedInOrder(root.left);
-    		System.out.print(root.value + "  ");
-    		printExpectedInOrder(root.right);
+    		getInOrderTraversal(root.left, l);
+    		l.add(root.value);
+    		getInOrderTraversal(root.right, l);
     	}
     }
 }

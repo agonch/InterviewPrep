@@ -24,6 +24,7 @@ public class Node {
 		return this.right;
 	}
 
+	@Override
 	public String toString() {
 		return "" + this.value;
 	}
