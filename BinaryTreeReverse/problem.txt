@@ -1,0 +1,5 @@
+Given root of binary tree, return a list holding children pointing at their parents,
+and those nodes at their parents, ..., all the way up to root.
+The pointers get flipped from top down (root to children) to bottom up (from children to root).
+
+So you flip the direction of the pointers, starting at the children nodes. This is why you need list to keep track of children.
