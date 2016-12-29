@@ -8,15 +8,17 @@ input = """dir1
   file.txt
   file.jpeg
   dir13
-   file.txt
+   file.docx
 dir2
- file.png
+ file2.txt
 dir3
  dir31
   dir32
   dir33
    dir34
+    file3.png
  dir35
+  file4.png
  dir36
 dir4"""
 
@@ -33,11 +35,7 @@ for line in input.split('\n'):
         stack.append(line.strip())
     elif 'jpeg' in line or 'png' in line:
         # is file and an image file
-        abs_path = ''
-        for dir in stack:
-            abs_path += ('/' + dir)
-        if len(stack) == 0:
-            abs_path = '/'
+        abs_path = '/' + '/'.join(stack)
         if len(abs_path) > len(longest_path):
             longest_path = abs_path
 
