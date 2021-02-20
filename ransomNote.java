@@ -1,11 +1,11 @@
 import java.util.*;
 
-public class Solution {
+public class RansomNote {
     Map<String, Integer> magazineMap;
     Map<String, Integer> noteMap;
     String magazine, note;
     
-    public Solution(String magazine, String note) {
+    public RansomNote(String magazine, String note) {
         this.magazine = magazine;
         this.note = note;
         this.magazineMap = new HashMap<String, Integer>();
@@ -52,7 +52,7 @@ public class Solution {
         // Eat whitespace to beginning of next line
         scanner.nextLine();
         
-        Solution s = new Solution(scanner.nextLine(), scanner.nextLine());
+        RansomNote s = new RansomNote(scanner.nextLine(), scanner.nextLine());
         scanner.close();
         
         boolean answer = s.solve();
