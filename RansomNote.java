@@ -52,7 +52,7 @@ public class RansomNote {
         // Eat whitespace to beginning of next line
         scanner.nextLine();
         
-        RansomNote s = new RansomNote(scanner.nextLine(), scanner.nextLine());
+        ransomNote s = new ransomNote(scanner.nextLine(), scanner.nextLine());
         scanner.close();
         
         boolean answer = s.solve();
