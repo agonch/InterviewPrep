@@ -20,4 +20,14 @@ public interface FunctionalInterfacePractice {
         Stream<Integer> stream = Stream.of(1, 2, 3, 4, 5);
         stream.map(i -> f.foo(i)).forEach(System.out::println);
     }
+    /**
+     *  A=5
+        HI
+        A=1
+        A=2
+        A=2
+        A=3
+        A=4
+        A=5
+     */
 }
