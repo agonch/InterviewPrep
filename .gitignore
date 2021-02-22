@@ -1,4 +1,6 @@
 *.pyc
 *.javac
 *.class
+*.exe
 .idea/
+.vscode/
