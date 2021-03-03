@@ -24,6 +24,11 @@ import java.util.Stack;
 public class IslandCounts2DArray {
     public final int ROW = 5, COL = 5;
 
+    // These arrays are used to get row and column numbers 
+    // of 4 neighbors of a given cell.
+    private int rowNbr[] = new int[] {-1,  0, 0, 1}; 
+    private int colNbr[] = new int[] { 0, -1, 1, 0}; 
+
     public static void main(String[] args) {
         IslandCounts2DArray island = new IslandCounts2DArray();
         int[][] map = {
@@ -48,15 +53,23 @@ public class IslandCounts2DArray {
             {1, 0, 1, 0, 1}
         }; // Output 5
         pp(map);
-        System.out.println(" recurse_1: " +  island.countIslands_1(map) + " iterative_2: " + island.countIslands_2(map));
-        
+        System.out.println(
+            " recurse_1: " +  island.count_islands_recursive(map) 
+            + " iterative_2: " + island.count_islands_iterative(map)
+            + " iterative_in_place_3: " + island.count_islands_iterative_in_place(map));
         pp(map2);
-        System.out.println(" recurse_1: " +  island.countIslands_1(map2) + " iterative_2: " + island.countIslands_2(map2));
-        
+        System.out.println(
+            " recurse_1: " +  island.count_islands_recursive(map2) 
+            + " iterative_2: " + island.count_islands_iterative(map2)
+            + " iterative_in_place_3: " + island.count_islands_iterative_in_place(map2));        
         pp(map3);
-        System.out.println(" recurse_1: " +  island.countIslands_1(map3) + " iterative_2: " + island.countIslands_2(map3));
-    }
+        System.out.println(
+            " recurse_1: " +  island.count_islands_recursive(map3) 
+            + " iterative_2: " + island.count_islands_iterative(map3)
+            + " iterative_in_place_3: " + island.count_islands_iterative_in_place(map3));
+        }
 
+    // Pretty print
     public static void pp(int[][] arrs) {
         System.out.println("[");
         for(int[] arr : arrs) {
@@ -65,12 +78,11 @@ public class IslandCounts2DArray {
         System.out.println("]");
     }
 
-    private boolean isSafe(int M[][], int r, int c, boolean visited[][]) {
-        return r >= 0 && r < ROW && c >= 0 && c < COL 
-          && (M[r][c] == 1 && !visited[r][c]); 
+    private boolean isSafeLand(int M[][], int r, int c) {
+        return r >= 0 && r < ROW && c >= 0 && c < COL && M[r][c] == 1; 
     }
 
-    public int countIslands_1(int M[][]) {
+    public int count_islands_recursive(int M[][]) {
         // Make a bool array to mark visited cells. 
         boolean visited[][] = new boolean[ROW][COL]; 
         int count = 0;
@@ -87,13 +99,13 @@ public class IslandCounts2DArray {
         return count;
     }
 
-    public int countIslands_2(int M[][]) {
+    public int count_islands_iterative(int M[][]) {
         boolean visited[][] = new boolean[ROW][COL];
         Stack<Coord> worklist = new Stack<Coord>();
         int count = 0;
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) { 
-                if (M[i][j] == 1 && !visited[i][j]) { 
+                if (M[i][j] == 1 && !visited[i][j]) {
                     visited[i][j] = true;
                     worklist.push(new Coord(i, j));
                     // If a cell with value 1 is not visited yet, a new island is found!
@@ -106,34 +118,61 @@ public class IslandCounts2DArray {
         return count;
     }
 
-    public void DFS_recursive(int M[][], int r, int c, boolean visited[][]) {
-        // These arrays are used to get row and column numbers 
-        // of 4 neighbors of a given cell 
-        int rowNbr[] = new int[] {-1,  0, 0, 1}; 
-        int colNbr[] = new int[] { 0, -1, 1, 0}; 
-  
+    public int count_islands_iterative_in_place(int M[][]) {
+        Stack<Coord> worklist = new Stack<Coord>();
+        int count = 0;
+        for (int i = 0; i < ROW; i++) {
+            for (int j = 0; j < COL; j++) { 
+                if (M[i][j] == 1) {
+                    worklist.push(new Coord(i, j));
+                    DFS_iterative_in_place(M, worklist); 
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public void DFS_recursive(int M[][], int row, int col, boolean visited[][]) {
         // Mark this cell as visited 
-        visited[r][c] = true; 
+        visited[row][col] = true;
   
         // Recur for all connected unvisited neighbours 
         for (int k = 0; k < 4; k++) {
-            if (isSafe(M, r + rowNbr[k], c + colNbr[k], visited)) {
-                DFS_recursive(M, r + rowNbr[k], c + colNbr[k], visited);
+            int neighborRow = row + rowNbr[k];
+            int neighborCol = col + colNbr[k];
+            if (isSafeLand(M, neighborRow, neighborCol) && !visited[neighborRow][neighborCol]) {
+                DFS_recursive(M, neighborRow, neighborCol, visited);
             }
         }
     }
 
     public void DFS_iterative(int M[][], Stack<Coord> worklist, boolean visited[][]) {
-        int rowNbr[] = new int[] {-1,  0, 0, 1}; 
-        int colNbr[] = new int[] { 0, -1, 1, 0};
         while(!worklist.isEmpty()) {
             Coord next = worklist.pop();
             // For all unvisited safe neighbors...
             for (int k = 0; k < 4; k++) {
-                if (isSafe(M, next.row + rowNbr[k], next.col + colNbr[k], visited)) {
-                    Coord child = new Coord(next.row + rowNbr[k], next.col + colNbr[k]);
-                    visited[child.row][child.col] = true;
-                    worklist.push(child);
+                int neighborRow = next.row + rowNbr[k];
+                int neighborCol = next.col + colNbr[k];
+                if (isSafeLand(M, neighborRow, neighborCol) && !visited[neighborRow][neighborCol]) {
+                    visited[neighborRow][neighborCol] = true;
+                    worklist.push(new Coord(neighborRow, neighborCol));
+                }
+            }
+        }
+    }
+
+    // Use the map matrix as the visisted matrix as well. (-1 = visisted land)
+    public void DFS_iterative_in_place(int M[][], Stack<Coord> worklist) {
+        while(!worklist.isEmpty()) {
+            Coord next = worklist.pop();
+            // For all unvisited safe neighbors...
+            for (int k = 0; k < 4; k++) {
+                int neighborRow = next.row + rowNbr[k];
+                int neighborCol = next.col + colNbr[k];
+                if (isSafeLand(M, neighborRow, neighborCol)) {
+                    M[neighborRow][neighborCol] = -1;
+                    worklist.push(new Coord(neighborRow, neighborCol));
                 }
             }
         }
